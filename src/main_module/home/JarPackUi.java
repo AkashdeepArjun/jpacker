@@ -27,7 +27,7 @@ public class JarPackUi extends Panel implements ActionListener{
                 public final static DateFormat dateformat=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             
 
-            ProcessBuilder process_builder=new ProcessBuilder();
+            private ProcessBuilder process_builder=new ProcessBuilder();
             Process process;
             GridBagLayout root_layout;
             GridBagConstraints constraints;

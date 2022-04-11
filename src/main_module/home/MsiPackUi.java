@@ -28,7 +28,8 @@ public class MsiPackUi extends Panel implements ActionListener{
 
     //Process Builder 
 
-    private ProcessBuilder processBuilder;
+    private ProcessBuilder processBuilder = new ProcessBuilder();
+    private Process process;
 
     public MsiPackUi(Frame root_container){
             this.frame_root=root_container;
@@ -64,7 +65,6 @@ public class MsiPackUi extends Panel implements ActionListener{
         button_set_main_jar=new Button("Set Main jar");
         label_status=new Label("STATUS:");
         status=new Label();
-        processBuilder=new ProcessBuilder();
         file_chooser=new FileDialog(this.frame_root);
 
     }
@@ -174,52 +174,67 @@ public class MsiPackUi extends Panel implements ActionListener{
 
         public void generate_msi(){
 
-
+            // String user_dir=System.getProperty("user.dir");
+            // String folder_path=user_dir+File.separator+"output_msi";
             File output_file= new File("output_msi");
             if(!output_file.exists()){
                 output_file.mkdir();
             }
-            String path=output_file.getAbsolutePath();
-            MyUtils.log("EVENT FOLDER CREATED",output_file.getAbsolutePath());
-            List<String> command=new ArrayList<String>();
-            String app_name=tf_app_name.getText();
+            String path=output_file.getAbsolutePath().toString().trim();
+            String main_jar_file_name=tf_main_jar.getText().toString().trim();
+            String main_jar_dir=tf_main_jar_dir.getText().toString().trim();
+            String app_name=tf_app_name.getText().toString().trim();
+            String vendor=tf_vendor.getText().toString().trim();
+            String icon=tf_icon.getText().toString().trim();
+            String license=tf_license.getText().toString().trim();
+            String copyright=tf_copyrighTextField.getText().toString().trim();
+
+             MyUtils.log("EVENT FOLDER CREATED",output_file.getAbsolutePath());
+            List<String> mcommand=new ArrayList<String>();
+            // StringBuilder sb= new StringBuilder();
+            
             String app_name_with_path =path+File.separator+app_name;
-            MyUtils.log("APP WITH FULL PATH",app_name_with_path);
-            String main_jar_file_name=tf_main_jar.getText();
-            String icon=tf_icon.getText();
-            String vendor=tf_vendor.getText();
-            String license=tf_license.getText();
-            String main_jar_dir=tf_main_jar_dir.getText();
-            String copyright=tf_copyrighTextField.getText();
+            // MyUtils.log("APP WITH FULL PATH",app_name_with_path);
             if(main_jar_file_name.isEmpty() || main_jar_dir.isEmpty() ){
 
                 MyUtils.log("EVENT EMPTY IMPORTANT FIELD","check jar file name or directory textfield is not empty");
                 UpdateStatus(status, "ERROR", Color.decode("#e63946"),Color.decode("#f8f9fa"));
                 status.setAlignment(Label.CENTER);
             }
-            command.add("jpackage");
-            command.add("--name");
-            command.add(app_name);
-            command.add("--input");
-            command.add(main_jar_dir);
-            if(!icon.isEmpty() || !icon.isBlank()){
-            command.add("--icon");
-            command.add(icon);
-            }
-            if(!vendor.isEmpty() || !vendor.isBlank()){
-                command.add("--vendor");
-                command.add(vendor);
-            }
-            if(!license.isEmpty() || !license.isBlank()){
-                command.add("--license");
-                command.add(license);
-            }
-            
-            command.add("--main-jar");
-            command.add(main_jar_file_name);
+            String program="C:\\Program Files\\Java\\jdk-16.0.1\\bin\\jpackage.exe";
+            MyUtils.log("PROGRAM PATH",program);
+            mcommand.add(program);
+            mcommand.add("-n");
+            mcommand.add(app_name);
+            mcommand.add("-i");
+            mcommand.add(main_jar_dir);
+            mcommand.add("-d");
+            mcommand.add(path);
+            mcommand.add("--icon");
+            mcommand.add(icon);
 
+            MyUtils.log("MAIN JAR DIRECTORY SET", main_jar_dir);
+            
+            // if(!icon.isEmpty()){
+            // mcommand.add("--icon");
+            // mcommand.add(icon);
+            // }
+            if(!vendor.isEmpty()){
+                mcommand.add("--vendor");
+                mcommand.add(vendor);
+            }
+            // mcommand.add("--verbose");
+            // // if(!license.isEmpty() || !license.isBlank()){
+            // //     command.add("--license");
+            // //     command.add(license);
+            // // }
+            
+            mcommand.add("--main-jar");
+            mcommand.add(main_jar_file_name);
+
+            String comnad_to_execute="jpackage -n "+app_name+" -i "+main_jar_dir+" -v "+" --icon "+icon+" --main-jar "+main_jar_file_name;
             try{
-                final Process process=processBuilder.command(command).start();
+                process=processBuilder.command(mcommand).start();
                 UpdateStatus(status, "STARTED", Color.decode("#9bf6ff"),Color.BLACK);
                 status.setAlignment(Label.CENTER);
                 
@@ -227,22 +242,29 @@ public class MsiPackUi extends Panel implements ActionListener{
                     button_generate_msi.setEnabled(false);
                 UpdateStatus(status, "WAIT..", Color.decode("#faa307"),Color.BLACK);
                 status.setAlignment(Label.CENTER);
+                logErrorOfProcess("runnng process",process);
+                showProcessOutput(process);
                 }
                 if(!process.isAlive()){
-                    button_generate_msi.setEnabled(true);
-                  UpdateStatus(status, "DONE", Color.decode("#caffbf"),Color.BLACK);
-                status.setAlignment(Label.CENTER);
-
+                    button_generate_msi.setEnabled(true);    
+                    MyUtils.log(" PROCESS EXIT CODE", "process exited with "+process.exitValue());
+                    if(process.exitValue()==0){
+                        UpdateStatus(status,"DONE",Color.GREEN,Color.WHITE);
+                    }
                 }
+            }catch(IOException e){
+                
+                MyUtils.log("IOEXCEPTION",e.getMessage());
+                e.printStackTrace();
+
             }catch(Exception e){
                 MyUtils.log("EXCEPTION", e.getMessage());
+                e.printStackTrace();
                 // UpdateStatus(status, "ERROR", Color.decode(""),Color.BLACK);
                 UpdateStatus(status, "ERROR", Color.decode("#e63946"),Color.decode("#f8f9fa"));
                 status.setAlignment(Label.CENTER);
                 
             }
-
-
 
         }
 
@@ -265,5 +287,39 @@ public class MsiPackUi extends Panel implements ActionListener{
 
             }
             
+        }
+
+ 
+        public static void logErrorOfProcess(String title,Process p){
+            final BufferedReader error_buffer_reader= new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            try{
+
+                int count=1;
+                while(error_buffer_reader.readLine()!=null){
+                String error_message=error_buffer_reader.readLine();
+                MyUtils.log(title+" PROCESS LOG MESSAGE "+count, error_message);
+                count++;
+            }
+
+
+            }catch(Exception r){
+                MyUtils.log(title+" PROCESS ERROR LOG", r.getMessage());
+            }
+            
+        }
+
+        public static void showProcessOutput(Process p){
+            try{
+
+                final BufferedReader process_out_put_reader=new BufferedReader(new InputStreamReader(p.getInputStream()));
+            while(process_out_put_reader.readLine()!=null){
+                MyUtils.log("PROCESS VERBOSE",process_out_put_reader.readLine().toString());
+            }
+            }catch(IOException e){
+                MyUtils.log("PROCESS OUTPUT EXCEPTION",e.getMessage() );
+                e.printStackTrace();
+            }
+            
+
         }
 }
