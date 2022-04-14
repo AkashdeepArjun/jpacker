@@ -1,4 +1,5 @@
 module main_module{
     requires java.base;
-    requires java.desktop;
+    requires transitive java.desktop;
+    exports home to test_module;
 }

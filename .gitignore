@@ -30,3 +30,7 @@ output_msi/poplu_laal-1.0.exe
 jpacker_win-1.0.exe
 pp-1.0.exe
 mimi-1.0.exe
+output_msi/jpacker_ui-1.0.exe
+classes/test_module/module-info.class
+classes/test_module/home_test/TestJarPackUi.class
+classes/test_module/home_test/TestMsiUi.class
