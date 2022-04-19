@@ -3,10 +3,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-
+import javax.swing.*;
 import javax.swing.text.LabelView;
 import home.OutputArea;
-
+import java.io.File;
 public class UiPackingLib extends Panel{
 
     Frame root;
@@ -26,6 +26,8 @@ public class UiPackingLib extends Panel{
 
             // file opening dialogs
     FileDialog select_compiled_class_dialog;
+
+    JFileChooser j_selected_compiled_class_dialog;
 
                 //output area
 
@@ -100,7 +102,7 @@ public class UiPackingLib extends Panel{
                     //file dialogs
 
                     select_compiled_class_dialog = new FileDialog(this.root,"select class folder");
-
+                    j_selected_compiled_class_dialog=new JFileChooser();
 
                     output_area = new OutputArea();
 
@@ -108,16 +110,17 @@ public class UiPackingLib extends Panel{
 
                 class_path_button.addActionListener(new ActionListener(){
                     public void actionPerformed(ActionEvent e){
-                            select_compiled_class_dialog.setVisible(true);
-                            String dir_name= select_compiled_class_dialog.getDirectory();
+                          
+                            
+                            // String dir_name= select_compiled_class_dialog.getDirectory();
+                            String dir_name=select_compiled_files_directory();
                             class_path_field.setText(dir_name);
                             // class_path_field.setText(directory_selected);
                     }
                 });
                 output_dir_button.addActionListener(new ActionListener(){
                     public void actionPerformed(ActionEvent e){
-                        select_compiled_class_dialog.setVisible(true);
-                        String output_dir_name=select_compiled_class_dialog.getDirectory();
+                        String output_dir_name=select_output_directory();
                         output_dir_field.setText(output_dir_name);
                     }
                 });
@@ -199,5 +202,30 @@ public class UiPackingLib extends Panel{
         add(comp,gc);
     }
 
+    public String select_compiled_files_directory(){
+
+        j_selected_compiled_class_dialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        j_selected_compiled_class_dialog.setDialogTitle("select compiled class directory");
+        // select_compiled_class_dialog.setVisible(true);
+        j_selected_compiled_class_dialog.showOpenDialog(this);
+        File compiled_files_dir=j_selected_compiled_class_dialog.getSelectedFile();
+        String directory_name=compiled_files_dir.getAbsolutePath();
+
+        return directory_name;
+    }
+
+    public String select_output_directory(){
+
+
+        j_selected_compiled_class_dialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        j_selected_compiled_class_dialog.setDialogTitle("select compiled class directory");
+        // select_compiled_class_dialog.setVisible(true);
+        j_selected_compiled_class_dialog.showOpenDialog(this);
+        File compiled_files_dir=j_selected_compiled_class_dialog.getSelectedFile();
+        String directory_name=compiled_files_dir.getAbsolutePath();
+
+        return directory_name;
+
+    }
     
 }

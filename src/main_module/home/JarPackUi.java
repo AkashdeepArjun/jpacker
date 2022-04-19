@@ -2,6 +2,7 @@ package home;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import javax.swing.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -52,7 +53,7 @@ public class JarPackUi extends Panel implements ActionListener{
 
                 FileDialog file_and_directory_select_dialog=new FileDialog(frame_root,"title");
 
-
+                JFileChooser j_file_and_dir_select_dialog;
                     // manifest creator 
 
                     String main_class_mf,cp;
@@ -97,7 +98,7 @@ public class JarPackUi extends Panel implements ActionListener{
                                 button_test_jar =new Button("Test Jar");
 
                                 //file dialog setup
-                                
+                                j_file_and_dir_select_dialog=new JFileChooser();
 
                                 // status
                                 label_status= new Label("STATUS:");
@@ -202,10 +203,15 @@ public class JarPackUi extends Panel implements ActionListener{
 
     public void setCompiledFilesDirectory(){
 
-        file_and_directory_select_dialog.setTitle("select compiled class directory");
-        file_and_directory_select_dialog.setVisible(true);
+        j_file_and_dir_select_dialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        // file_and_directory_select_dialog.setTitle("select compiled class directory");
+        j_file_and_dir_select_dialog.setDialogTitle("select compiled class directory");
+        j_file_and_dir_select_dialog.showOpenDialog(this);
+        // file_and_directory_select_dialog.setVisible(true);
 
-        String directory=file_and_directory_select_dialog.getDirectory();
+        File f= j_file_and_dir_select_dialog.getSelectedFile();
+        // String directory=file_and_directory_select_dialog.getDirectory();
+        String directory = f.getAbsolutePath();
         tf_compiled_files.setText(directory);
     }
 
@@ -219,18 +225,28 @@ public class JarPackUi extends Panel implements ActionListener{
     }
 
     public void getOutputDirectory(){
-
-        file_and_directory_select_dialog.setTitle("select directory you wanna store jar file");
-        file_and_directory_select_dialog.setVisible(true);
-        String output_directory=file_and_directory_select_dialog.getDirectory();
+        j_file_and_dir_select_dialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        // file_and_directory_select_dialog.setTitle("select directory you wanna store jar file");
+        j_file_and_dir_select_dialog.setDialogTitle("Select directory where you wanna store file");
+        // file_and_directory_select_dialog.setVisible(true);
+        j_file_and_dir_select_dialog.showOpenDialog(this);
+        File output_dir=j_file_and_dir_select_dialog.getSelectedFile();
+        // String output_directory=file_and_directory_select_dialog.getDirectory();
+        String output_directory=output_dir.getAbsolutePath();
         tf_output_file_dir.setText(output_directory);
     }
 
     public void getMainModuleDirectory(){
-        file_and_directory_select_dialog.setTitle("select main module directory");
-        file_and_directory_select_dialog.setVisible(true);
-        String main_module_director=file_and_directory_select_dialog.getDirectory();
-        tf_main_module_dir.setText(main_module_director);
+
+        j_file_and_dir_select_dialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        // file_and_directory_select_dialog.setTitle("select main module directory");
+        j_file_and_dir_select_dialog.setDialogTitle("select main module directory");
+        // file_and_directory_select_dialog.setVisible(true);
+        j_file_and_dir_select_dialog.showOpenDialog(this);
+        File module_dir=j_file_and_dir_select_dialog.getSelectedFile();
+        // String main_module_director=file_and_directory_select_dialog.getDirectory();
+        String main_module_directory=module_dir.getAbsolutePath();
+        tf_main_module_dir.setText(main_module_directory);
         
     }
 

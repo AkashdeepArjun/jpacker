@@ -46,3 +46,6 @@ ss/Capture.PNG
 src/libs/jpacker_utlimate.jar
 src/libs/jackper_app.jar
 src/libs/jackper_app.jar
+output_msi/dhaki_tikki-1.0.exe
+output_msi/jpacker_pro-1.0.exe
+src/libs/jpacker_pro.jar
