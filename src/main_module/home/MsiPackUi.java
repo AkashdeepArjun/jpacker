@@ -2,7 +2,7 @@ package home;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-
+import javax.swing.*;
 import javax.security.auth.callback.TextInputCallback;
 import java.util.*;
 import java.util.List;
@@ -25,6 +25,7 @@ public class MsiPackUi extends Panel implements ActionListener{
 
     FileDialog file_chooser;
 
+    JFileChooser j_file_chooser;
 
     //Process Builder 
 
@@ -66,6 +67,7 @@ public class MsiPackUi extends Panel implements ActionListener{
         label_status=new Label("STATUS:");
         status=new Label();
         file_chooser=new FileDialog(this.frame_root);
+        j_file_chooser=new JFileChooser();
 
     }
 
@@ -145,11 +147,17 @@ public class MsiPackUi extends Panel implements ActionListener{
         }
 
         public void setMainJar(){
-                file_chooser.setTitle("choose jar file");
-                file_chooser.setVisible(true);
-                String file_name=file_chooser.getFile();
+               j_file_chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                // file_chooser.setTitle("choose jar file");
+                j_file_chooser.setDialogTitle("Choose jar file");
+                // file_chooser.setVisible(true);
+                j_file_chooser.showOpenDialog(this);
+                // String file_name=file_chooser.getFile();
+                File file_selected =j_file_chooser.getSelectedFile();
+                String file_name=file_selected.getName();
                 tf_main_jar.setText(file_name);
-                String file_directory=file_chooser.getDirectory();
+                // String file_directory=file_chooser.getDirectory();
+                String file_directory=file_selected.getParent();
                 tf_main_jar_dir.setText(file_directory);
         }
 
@@ -201,7 +209,9 @@ public class MsiPackUi extends Panel implements ActionListener{
                 UpdateStatus(status, "ERROR", Color.decode("#e63946"),Color.decode("#f8f9fa"));
                 status.setAlignment(Label.CENTER);
             }
-            String program="C:\\Program Files\\Java\\jdk-16.0.1\\bin\\jpackage.exe";
+
+            // C:\Program Files\Java\jdk-18\bin
+            String program="C:\\Program Files\\Java\\jdk-18\\bin\\jpackage.exe";
             MyUtils.log("PROGRAM PATH",program);
             mcommand.add(program);
             mcommand.add("-n");
@@ -229,6 +239,8 @@ public class MsiPackUi extends Panel implements ActionListener{
             // //     command.add(license);
             // // }
             
+            // mcommand.add("--main-class");
+            // mcommand.add("home.Home");
             mcommand.add("--main-jar");
             mcommand.add(main_jar_file_name);
 
