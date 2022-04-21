@@ -334,4 +334,15 @@ public class MsiPackUi extends Panel implements ActionListener{
             
 
         }
+
+        public void setUpFields(String jar_file_name,String jar_file_directory,String app_name,String vendor,String icon_path,String license_path,String copyright_text){
+
+            tf_main_jar.setText(jar_file_name);
+            tf_main_jar_dir.setText(jar_file_directory);
+            tf_app_name.setText(app_name);
+            tf_vendor.setText(vendor);
+            tf_icon.setText(icon_path);
+            tf_license.setText(license_path);
+            tf_copyrighTextField.setText(copyright_text);
+        }
 }
