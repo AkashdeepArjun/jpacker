@@ -53,3 +53,7 @@ src/libs/jpacker_pro_executable_jar.zip
 classes/test_module/module-info.class
 classes/test_module/home_test/TestMsipack.class
 classes/test_module/home_test/TestMsipack$1.class
+output_jar/jpacker_pro_v1.1.jar
+output_jar/jpacker_pro_v1.1.zip
+output_jar/lib.jar
+output_jar/README.txt

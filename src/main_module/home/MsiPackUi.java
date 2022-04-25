@@ -211,7 +211,7 @@ public class MsiPackUi extends Panel implements ActionListener{
             }
 
             // C:\Program Files\Java\jdk-18\bin
-            String program="C:\\Program Files\\Java\\jdk-18\\bin\\jpackage.exe";
+            String program="jpackage";
             MyUtils.log("PROGRAM PATH",program);
             mcommand.add(program);
             mcommand.add("-n");
