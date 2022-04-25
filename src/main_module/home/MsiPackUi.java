@@ -335,6 +335,8 @@ public class MsiPackUi extends Panel implements ActionListener{
 
         }
 
+                // helper function if this is going to be used as library 
+            
         public void setUpFields(String jar_file_name,String jar_file_directory,String app_name,String vendor,String icon_path,String license_path,String copyright_text){
 
             tf_main_jar.setText(jar_file_name);
