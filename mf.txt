@@ -1,2 +1,2 @@
-Class-Path: lol.jar
+Class-Path: lib.jar
 Main-Class: home.Home
